@@ -148,8 +148,8 @@ function gameLoop() {
     for (let i = 1; i < snake.length; i++) { // Start from index 1 instead of 0
         if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) {
             console.log("Game Over: Collision with itself");
-            gameOver = true; // Set game over flag
-            return; // Exit the loop to prevent further checks
+            gameOver = true;
+            return;
         }
     }
     
@@ -158,8 +158,8 @@ function gameLoop() {
         snake[0].y < 0 || snake[0].y >= canvas.height / segmentSize ||
         snake[0].x >= canvas.width || snake[0].y >= canvas.height) {
         console.log("Game Over: Collision with boundaries");
-        gameOver = true; // Set game over flag
-        return; // Exit the loop
+        gameOver = true;
+        return;
     }
 
     // Continue the game loop after a delay
