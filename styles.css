@@ -28,3 +28,22 @@ canvas {
     border-radius: 10px;
     color: white;
 }
+
+#announcements {
+    margin-top: 20px; /* Adjust margin as needed */
+    padding: 10px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px; /* Adjust width as needed */
+}
+
+#announcements h2 {
+    font-size: 1.2em;
+    color: #333;
+}
+
+#announcements p {
+    font-size: 1em;
+    color: #666;
+}

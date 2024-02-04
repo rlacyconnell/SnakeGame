@@ -1,25 +1,3 @@
-// Define variables
-let gameInterval;
-let endScreen = document.getElementById("endScreen");
-let finalScoreDisplay = document.getElementById("finalScore");
-
-// Function to handle game over
-function gameOverHandler() {
-    console.log("Game Over Handler called"); // Add this line
-    clearInterval(gameInterval); // Stop the game loop
-    endScreen.style.display = "block"; // Show the end screen
-    finalScoreDisplay.innerText = "Final Score: " + score; // Display final score
-}
-
-// Function to play again
-function playAgain() {
-    endScreen.style.display = "none"; // Hide the end screen
-    startGame(); // Restart the game
-}
-
-// Play again button event listener
-document.getElementById("playAgainButton").addEventListener("click", playAgain);
-
 // Load highest score from local storage
 let highestScore = localStorage.getItem("highestScore");
 if (!highestScore) {
