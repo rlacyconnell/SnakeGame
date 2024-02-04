@@ -7,7 +7,7 @@ if (!highestScore) {
 }
 document.getElementById("highScoreDisplay").innerText = "High Score: " + highestScore;
 
-// Update highest score if needed
+// Update highest score
 function updateHighestScore() {
     if (score > highestScore) {
         highestScore = score;
@@ -16,27 +16,27 @@ function updateHighestScore() {
     }
 }
 
-// Get the canvas element
+// canvas element
 var canvas = document.getElementById("gameCanvas");
 var context = canvas.getContext('2d');
 
-// Define the snake
+// snake
 var snake = [
     { x: 10, y: 10 } // head of the snake
 ];
 
-// Size and color of the snake
+// Size and color of snake
 var segmentSize = 20; // size for each segment
 var snakeColor = "green";
 
-// Define the snake direction
+// snake starting direction
 var snakeDirection = 'right';
 
-// Define the apple
+// apple
 var apple = {
-    x: Math.floor(Math.random() * (canvas.width / segmentSize)), // random x coordinate within the canvas width
-    y: Math.floor(Math.random() * (canvas.height / segmentSize)), // random y coordinate within the canvas height
-    color: "red" // Color of the apple
+    x: Math.floor(Math.random() * (canvas.width / segmentSize)),
+    y: Math.floor(Math.random() * (canvas.height / segmentSize)),
+    color: "red"
 };
 
 let score = 0;
@@ -47,28 +47,28 @@ function updateScore() {
 // Event listener for keyboard input
 document.addEventListener('keydown', function(event) {
     switch(event.keyCode) {
-        case 37: // left arrow
+        case 37: // left
             if (snakeDirection !== 'right') {
                 snakeDirection = 'left';
             }
             break;
-        case 38: // up arrow
+        case 38: // up
             if (snakeDirection !== 'down') {
                 snakeDirection = 'up';
             }
             break;
-        case 39: // right arrow
+        case 39: // right
             if (snakeDirection !== 'left') {
                 snakeDirection = 'right';
             }
             break;
-        case 40: // down arrow
+        case 40: // down
             if (snakeDirection !== 'up') {
                 snakeDirection = 'down';
             }
             break;
         case 32: // spacebar
-            // Handle spacebar press (if needed)
+            // play/pause maybe?
             break;
     }
 });
@@ -76,7 +76,7 @@ document.addEventListener('keydown', function(event) {
 //snake movement
 function moveSnake() {
     //moving the head
-    var newHead = {x: snake[0].x, y: snake[0].y}; //new head segment
+    var newHead = {x: snake[0].x, y: snake[0].y}; //new head piece
     switch (snakeDirection) {
         case 'up':
             newHead.y--;
@@ -92,34 +92,34 @@ function moveSnake() {
             break;
     }
     
-    // Check if the new head position collides with the apple
+    // head collision with apple
     if (newHead.x === apple.x && newHead.y === apple.y) {
-        // Increase the score
+       
         score++;
-        // Update score display
+       
         updateScore();
-        // Update high score if needed
+        
         updateHighestScore();
         
-        // Generate a new random position for the apple
+        // apple spawner
         apple.x = Math.floor(Math.random() * (canvas.width / segmentSize));
         apple.y = Math.floor(Math.random() * (canvas.height / segmentSize));
         
-        // Instead of pushing a new segment, simply don't pop the tail segment
+       
     } else {
-        // Remove the last segment to maintain the snake's length
+        
         snake.pop();
     }
     
-    // Add the new head segment to the beginning of the array
+    // Add the new head segment to the array
     snake.unshift(newHead);
 }
 
-// Define a variable to track game over state
+// game over state
 let gameOver = false;
 
-// Define the speed of the game (in milliseconds)
-const gameSpeed = 100; // Adjust this value to change the speed (higher value for slower speed)
+// game speed milliseconds
+const gameSpeed = 100;
 
 function gameLoop() {
     
@@ -144,7 +144,7 @@ function gameLoop() {
         context.fillRect(segment.x * segmentSize, segment.y * segmentSize, segmentSize, segmentSize);
     });
     
-    // Check for collision
+    // collision check
     for (let i = 1; i < snake.length; i++) { // Start from index 1 instead of 0
         if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) {
             console.log("Game Over: Collision with itself");
@@ -153,13 +153,13 @@ function gameLoop() {
         }
     }
     
-    // Check for collision with boundaries
+    // collision with boundaries
     if (snake[0].x < 0 || snake[0].x >= canvas.width / segmentSize ||
         snake[0].y < 0 || snake[0].y >= canvas.height / segmentSize ||
         snake[0].x >= canvas.width || snake[0].y >= canvas.height) {
         console.log("Game Over: Collision with boundaries");
         gameOver = true; // Set game over flag
-        return; // Exit the loop to prevent further checks
+        return; // Exit the loop
     }
 
     // Continue the game loop after a delay

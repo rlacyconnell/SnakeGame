@@ -8,42 +8,26 @@ body {
 }
 
 #container {
-    text-align: center;
-    margin-bottom: 20px; /* Adjust as needed */
+    display: flex;
+    align-items: center;
 }
 
-canvas {
-    border: 1px solid white;
-    background-color: #000000;
-}
-
-#endScreen {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    border-radius: 10px;
-    color: white;
+#title-and-scores {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px; /* Adjust as needed */
 }
 
 #announcements {
-    margin-top: 20px; /* Adjust margin as needed */
     padding: 10px;
     background-color: #f8f8f8;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 300px; /* Adjust width as needed */
 }
 
-#announcements h2 {
-    font-size: 1.2em;
-    color: #333;
-}
-
-#announcements p {
-    font-size: 1em;
-    color: #666;
+canvas {
+    margin-top: 20px; /* Adjust as needed */
+    border: 1px solid white;
+    background-color: #000000;
 }

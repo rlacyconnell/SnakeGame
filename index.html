@@ -8,19 +8,22 @@
 </head>
 <body>
     <div id="container">
-        <h1>snake game</h1>
-        <p id="highScoreDisplay">High Score: 0</p> <!-- Display the high score -->
-        <p id="scoreDisplay">Current Score: 0</p>
+        <div id="title-and-scores">
+            <h1>Snake Game</h1>
+            <p id="highScoreDisplay">High Score: 0</p>
+            <p id="scoreDisplay">Current Score: 0</p>
+        </div>
+        <div id="announcements">
+            <h2>What's to come</h2>
+            <ul>
+                <li>Leaderboard System</li>
+                <li>Phone Support</li>
+                <li>Refining the Start and End Sequence</li>
+            </ul>
+        </div>
     </div>
     <canvas id="gameCanvas" width="600" height="600"></canvas>
-    <div id="announcements">
-        <h2>What's to come</h2>
-        <p>
-            <ul>Leaderboard System</ul>
-            <ul>Phone Support</ul>
-            <ul>Refining the Start and End Sequence</ul>
-        </p>
-    </div>
     <script src="script.js"></script>
 </body>
+
 </html>
