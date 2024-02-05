@@ -20,6 +20,8 @@ function updateHighestScore() {
 var canvas = document.getElementById("gameCanvas");
 var context = canvas.getContext('2d');
 
+let isPaused = false;
+
 // snake
 var snake = [
     { x: 10, y: 10 } // head of the snake
@@ -44,34 +46,150 @@ function updateScore() {
     document.getElementById("scoreDisplay").innerText = "Current Score: " + score;
 }
 
+// Get reference to the pause button
+const pauseButton = document.getElementById("pauseButton");
+
+// Event listener for mouse clicks
+pauseButton.addEventListener("click", togglePause);
+
+// Event listener for touch screen taps
+pauseButton.addEventListener("touchend", togglePause);
+
+// Function to toggle the pause state
+function togglePause() {
+    if (isPaused) {
+        isPaused = false;
+        gameLoop(); // Resume the game
+        pauseButton.innerText = "Pause";
+    } else {
+        isPaused = true;
+        pauseButton.innerText = "Resume";
+    }
+}
+
+// Function to draw a pause message
+function drawPauseMessage() {
+    context.fillStyle = "rgba(0, 0, 0, 0.5)"; // Semi-transparent black background
+    context.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
+    context.fillStyle = "#ffffff"; // White text color
+    context.font = "30px Arial"; // Set font size and family
+    context.textAlign = "center"; // Center text horizontally
+    context.fillText("Game Paused", canvas.width / 2, canvas.height / 2); // Draw the text in the center
+}
+
+// Function to clear the pause message
+function clearPauseMessage() {
+    context.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
+}
+
+
+
 // Event listener for keyboard input
 document.addEventListener('keydown', function(event) {
-    switch(event.keyCode) {
-        case 37: // left
+    switch(event.key) {
+        case 'ArrowLeft':
+        case 'a':
             if (snakeDirection !== 'right') {
                 snakeDirection = 'left';
             }
             break;
-        case 38: // up
+        case 'ArrowUp':
+        case 'w':
             if (snakeDirection !== 'down') {
                 snakeDirection = 'up';
             }
             break;
-        case 39: // right
+        case 'ArrowRight':
+        case 'd':
             if (snakeDirection !== 'left') {
                 snakeDirection = 'right';
             }
             break;
-        case 40: // down
+        case 'ArrowDown':
+        case 's':
             if (snakeDirection !== 'up') {
                 snakeDirection = 'down';
             }
             break;
-        case 32: // spacebar
-            // play/pause maybe?
+            case ' ': // spacebar
+            if (isPaused) {
+                // Resume the game
+                isPaused = false;
+                clearPauseMessage(); // Clear the pause message
+                gameLoop(); // Restart the game loop
+            } else {
+                // Pause the game
+                isPaused = true;
+                drawPauseMessage(); // Draw the pause message
+            }
             break;
     }
 });
+
+// Add touchstart event listener for touch input
+document.addEventListener('touchstart', function(event) {
+    // Prevent default behavior to avoid unwanted scrolling or zooming
+    event.preventDefault();
+
+    // Get the touch position relative to the canvas
+    var touchX = event.touches[0].clientX - canvas.getBoundingClientRect().left;
+    var touchY = event.touches[0].clientY - canvas.getBoundingClientRect().top;
+
+    // Call a function to handle touch input
+    handleTouchInput(touchX, touchY);
+});
+
+// Function to handle touch input
+function handleTouchInput(touchX, touchY) {
+    // Determine if the touch is on the left, right, top, or bottom half of the canvas
+    var canvasMidX = canvas.width / 2;
+    var canvasMidY = canvas.height / 2;
+
+    if (touchX < canvasMidX) {
+        // Left half of the canvas
+        if (touchY < canvasMidY) {
+            // Top-left quadrant, perform action (e.g., turn left)
+            handleLeftTouch();
+        } else {
+            // Bottom-left quadrant, perform action (e.g., turn down)
+            handleDownTouch();
+        }
+    } else {
+        // Right half of the canvas
+        if (touchY < canvasMidY) {
+            // Top-right quadrant, perform action (e.g., turn right)
+            handleRightTouch();
+        } else {
+            // Bottom-right quadrant, perform action (e.g., turn up)
+            handleUpTouch();
+        }
+    }
+}
+
+// Functions to handle touch actions (modify as needed)
+function handleLeftTouch() {
+    if (snakeDirection !== 'right') {
+        snakeDirection = 'left';
+    }
+}
+
+function handleUpTouch() {
+    if (snakeDirection !== 'down') {
+        snakeDirection = 'up';
+    }
+}
+
+function handleRightTouch() {
+    if (snakeDirection !== 'left') {
+        snakeDirection = 'right';
+    }
+}
+
+function handleDownTouch() {
+    if (snakeDirection !== 'up') {
+        snakeDirection = 'down';
+    }
+}
 
 //snake movement
 function moveSnake() {
@@ -122,18 +240,27 @@ let gameOver = false;
 const gameSpeed = 100;
 
 function gameLoop() {
-    
-    // If game over, stop the loop
-    if (gameOver) {
-        console.log("Game over condition met"); // Add this line
-        updateHighestScore(); // Update highest score before stopping the loop
-        gameOverHandler(); // Call gameOverHandler function
+    // If game is paused, draw the pause message and return without updating the game state
+    if (isPaused) {
+        drawPauseMessage();
         return;
     }
 
+    // Clear any existing pause message if the game is not paused
+    clearPauseMessage();
+    
+    // If game over or paused, stop the loop
+    if (gameOver || isPaused) {
+        console.log("Game over condition met or game is paused");
+        updateHighestScore();
+        gameOverHandler();
+        return;
+    }
+
+    // Rest of the game logic goes here
     context.clearRect(0, 0, canvas.width, canvas.height);
     moveSnake();
-    
+
     // Draw the apple on the canvas
     context.fillStyle = apple.color;
     context.fillRect(apple.x * segmentSize, apple.y * segmentSize, segmentSize, segmentSize);
@@ -143,16 +270,16 @@ function gameLoop() {
         context.fillStyle = snakeColor;
         context.fillRect(segment.x * segmentSize, segment.y * segmentSize, segmentSize, segmentSize);
     });
-    
+
     // collision check
-    for (let i = 1; i < snake.length; i++) { // Start from index 1 instead of 0
+    for (let i = 1; i < snake.length; i++) {
         if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) {
             console.log("Game Over: Collision with itself");
             gameOver = true;
             return;
         }
     }
-    
+
     // collision with boundaries
     if (snake[0].x < 0 || snake[0].x >= canvas.width / segmentSize ||
         snake[0].y < 0 || snake[0].y >= canvas.height / segmentSize ||
