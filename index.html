@@ -14,16 +14,23 @@
             <p id="scoreDisplay">Current Score: 0</p>
         </div>
         <div id="announcements">
-            <h2>What's to come</h2>
+            <h2>Announcements</h2>
             <ul>
-                <li>WASD Support</li>
-                <li>Touch-Screen Support</li>
-                <li>Refining the Start and End Sequence</li>
+                <li>Added WASD Support</li>
+                <li>Added Pause with Spacebar</li>
+                <li>Added Game Over</li>
+                <li>You no longer belong in the Console</li>
             </ul>
         </div>
     </div>
     <canvas id="gameCanvas" width="600" height="600"></canvas>
-    <script src="script.js"></script>
+    <button id="pauseButton">Pause</button>
+
+    <script src="input.js"></script>
+    <script src="score.js"></script>
+    <script src="state.js"></script>
+    <script src="logs.js"></script>
+    <script src="game.js"></script>
 </body>
 
 </html>

@@ -1,24 +1,13 @@
-// Load highest score from local storage
-let highestScore = localStorage.getItem("highestScore");
-if (!highestScore) {
-    highestScore = 0;
-} else {
-    highestScore = parseInt(highestScore);
-}
-document.getElementById("highScoreDisplay").innerText = "High Score: " + highestScore;
+//game.js
 
-// Update highest score
-function updateHighestScore() {
-    if (score > highestScore) {
-        highestScore = score;
-        localStorage.setItem("highestScore", highestScore.toString()); // Convert the score to a string before storing
-        document.getElementById("highScoreDisplay").innerText = "High Score: " + highestScore; // Update high score display
-    }
-}
+
 
 // canvas element
 var canvas = document.getElementById("gameCanvas");
 var context = canvas.getContext('2d');
+
+// game speed in milliseconds
+const gameSpeed = 100;
 
 // snake
 var snake = [
@@ -38,40 +27,6 @@ var apple = {
     y: Math.floor(Math.random() * (canvas.height / segmentSize)),
     color: "red"
 };
-
-let score = 0;
-function updateScore() {
-    document.getElementById("scoreDisplay").innerText = "Current Score: " + score;
-}
-
-// Event listener for keyboard input
-document.addEventListener('keydown', function(event) {
-    switch(event.keyCode) {
-        case 37: // left
-            if (snakeDirection !== 'right') {
-                snakeDirection = 'left';
-            }
-            break;
-        case 38: // up
-            if (snakeDirection !== 'down') {
-                snakeDirection = 'up';
-            }
-            break;
-        case 39: // right
-            if (snakeDirection !== 'left') {
-                snakeDirection = 'right';
-            }
-            break;
-        case 40: // down
-            if (snakeDirection !== 'up') {
-                snakeDirection = 'down';
-            }
-            break;
-        case 32: // spacebar
-            // play/pause maybe?
-            break;
-    }
-});
 
 //snake movement
 function moveSnake() {
@@ -94,46 +49,50 @@ function moveSnake() {
     
     // head collision with apple
     if (newHead.x === apple.x && newHead.y === apple.y) {
-       
         score++;
-       
         updateScore();
-        
         updateHighestScore();
         
+        // Randomly select message from array
+        const randomMessage = eatAppleMessages[Math.floor(Math.random() * eatAppleMessages.length)];
+    
+        // log that message
+        console.log("Apple Eaten: " + randomMessage);
+    
         // apple spawner
         apple.x = Math.floor(Math.random() * (canvas.width / segmentSize));
         apple.y = Math.floor(Math.random() * (canvas.height / segmentSize));
-        
-       
     } else {
-        
         snake.pop();
     }
-    
-    // Add the new head segment to the array
+
+    // add new head segment to array
     snake.unshift(newHead);
 }
 
-// game over state
-let gameOver = false;
-
-// game speed milliseconds
-const gameSpeed = 100;
 
 function gameLoop() {
-    
-    // If game over, stop the loop
-    if (gameOver) {
-        console.log("Game over condition met"); // Add this line
-        updateHighestScore(); // Update highest score before stopping the loop
-        gameOverHandler(); // Call gameOverHandler function
+    // If game is paused, draw the pause message and return without updating the game state
+    if (isPaused) {
+        drawPauseMessage();
         return;
     }
 
+    // Clear any existing pause message if the game is not paused
+    clearPauseMessage();
+    
+    // If game over or paused, stop the loop
+    if (gameOver || isPaused) {
+        console.log("Game over condition met or game is paused");
+        updateHighestScore();
+        gameOverHandler();
+        return;
+    }
+
+    // Rest of the game logic goes here
     context.clearRect(0, 0, canvas.width, canvas.height);
     moveSnake();
-    
+
     // Draw the apple on the canvas
     context.fillStyle = apple.color;
     context.fillRect(apple.x * segmentSize, apple.y * segmentSize, segmentSize, segmentSize);
@@ -143,14 +102,15 @@ function gameLoop() {
         context.fillStyle = snakeColor;
         context.fillRect(segment.x * segmentSize, segment.y * segmentSize, segmentSize, segmentSize);
     });
-    
+
     // collision check
-    for (let i = 1; i < snake.length; i++) { // Start from index 1 instead of 0
+    for (let i = 1; i < snake.length; i++) {
         if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) {
             console.log("Game Over: Collision with itself");
-            gameOver = true;
+            gameOver = true; // Set gameOver to true
+            gameOverHandler(); // Call the gameOverHandler function
             return;
-        }
+        }           
     }
     
     // collision with boundaries
@@ -158,9 +118,10 @@ function gameLoop() {
         snake[0].y < 0 || snake[0].y >= canvas.height / segmentSize ||
         snake[0].x >= canvas.width || snake[0].y >= canvas.height) {
         console.log("Game Over: Collision with boundaries");
-        gameOver = true;
+        gameOver = true; // Set gameOver to true
+        gameOverHandler(); // Call the gameOverHandler function
         return;
-    }
+}
 
     // Continue the game loop after a delay
     setTimeout(gameLoop, gameSpeed);
