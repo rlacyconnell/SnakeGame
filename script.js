@@ -16,6 +16,39 @@ function updateHighestScore() {
     }
 }
 
+// Function to handle game over
+function gameOverHandler() {
+    // Display an alert with the game over message
+    alert("Game Over! Your final score is: " + score);
+
+    // Ask the user if they want to restart the game
+    const restartGame = confirm("Do you want to play again?");
+
+    if (restartGame) {
+        // Reset the game variables and start a new game
+        resetGame();
+        gameLoop();
+    } else {
+        // Reload the page to reset the entire game
+        location.reload();
+    }
+}
+
+// Function to reset game variables
+function resetGame() {
+    snake = [{ x: 10, y: 10 }]; // Reset snake position
+    snakeDirection = 'right'; // Reset snake direction
+    apple = {
+        x: Math.floor(Math.random() * (canvas.width / segmentSize)),
+        y: Math.floor(Math.random() * (canvas.height / segmentSize)),
+        color: "red"
+    }; // Respawn the apple
+    score = 0; // Reset score
+    updateScore(); // Update score display
+    gameOver = false; // Reset game over flag
+}
+
+
 // canvas element
 var canvas = document.getElementById("gameCanvas");
 var context = canvas.getContext('2d');
@@ -82,7 +115,15 @@ function clearPauseMessage() {
     context.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
 }
 
-
+// Define an array of possible messages
+const eatAppleMessages = [
+    "Just what do you think you are doing?",
+    "You do not have access to this area.",
+    "Leave now and never come back!",
+    "What are you going to acomplish in here?",
+    "Shove off and get a life!",
+    "What? Am I supposed to be impressed?"
+];
 
 // Event listener for keyboard input
 document.addEventListener('keydown', function(event) {
@@ -212,23 +253,23 @@ function moveSnake() {
     
     // head collision with apple
     if (newHead.x === apple.x && newHead.y === apple.y) {
-       
         score++;
-       
         updateScore();
-        
         updateHighestScore();
         
+        // Randomly select a message from the array
+        const randomMessage = eatAppleMessages[Math.floor(Math.random() * eatAppleMessages.length)];
+    
+        // Log the selected message to the console
+        console.log("Apple Eaten: " + randomMessage);
+    
         // apple spawner
         apple.x = Math.floor(Math.random() * (canvas.width / segmentSize));
         apple.y = Math.floor(Math.random() * (canvas.height / segmentSize));
-        
-       
     } else {
-        
         snake.pop();
     }
-    
+
     // Add the new head segment to the array
     snake.unshift(newHead);
 }
@@ -275,19 +316,21 @@ function gameLoop() {
     for (let i = 1; i < snake.length; i++) {
         if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) {
             console.log("Game Over: Collision with itself");
-            gameOver = true;
+            gameOver = true; // Set gameOver to true
+            gameOverHandler(); // Call the gameOverHandler function
             return;
-        }
+        }           
     }
-
+    
     // collision with boundaries
     if (snake[0].x < 0 || snake[0].x >= canvas.width / segmentSize ||
         snake[0].y < 0 || snake[0].y >= canvas.height / segmentSize ||
         snake[0].x >= canvas.width || snake[0].y >= canvas.height) {
         console.log("Game Over: Collision with boundaries");
-        gameOver = true;
+        gameOver = true; // Set gameOver to true
+        gameOverHandler(); // Call the gameOverHandler function
         return;
-    }
+}
 
     // Continue the game loop after a delay
     setTimeout(gameLoop, gameSpeed);
