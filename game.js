@@ -2,10 +2,6 @@
 
 
 
-// canvas element
-var canvas = document.getElementById("gameCanvas");
-var context = canvas.getContext('2d');
-
 // game speed in milliseconds
 const gameSpeed = 100;
 
@@ -70,8 +66,13 @@ function moveSnake() {
     snake.unshift(newHead);
 }
 
-
 function gameLoop() {
+    // If the game hasn't started yet, display the start message/button and return
+    if (!isGameStarted) {
+        drawStartMessage();
+        return;
+    }
+
     // If game is paused, draw the pause message and return without updating the game state
     if (isPaused) {
         drawPauseMessage();
@@ -81,9 +82,9 @@ function gameLoop() {
     // Clear any existing pause message if the game is not paused
     clearPauseMessage();
     
-    // If game over or paused, stop the loop
-    if (gameOver || isPaused) {
-        console.log("Game over condition met or game is paused");
+    // If game over, stop the loop
+    if (gameOver) {
+        console.log("Game over condition met");
         updateHighestScore();
         gameOverHandler();
         return;
@@ -102,7 +103,7 @@ function gameLoop() {
         context.fillRect(segment.x * segmentSize, segment.y * segmentSize, segmentSize, segmentSize);
     });
 
-    // collision check
+    // Collision check
     for (let i = 1; i < snake.length; i++) {
         if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) {
             console.log("Game Over: Collision with itself");
@@ -112,7 +113,7 @@ function gameLoop() {
         }           
     }
     
-    // collision with boundaries
+    // Collision with boundaries
     if (snake[0].x < 0 || snake[0].x >= canvas.width / segmentSize ||
         snake[0].y < 0 || snake[0].y >= canvas.height / segmentSize ||
         snake[0].x >= canvas.width || snake[0].y >= canvas.height) {
@@ -120,7 +121,7 @@ function gameLoop() {
         gameOver = true; // Set gameOver to true
         gameOverHandler(); // Call the gameOverHandler function
         return;
-}
+    }
 
     // Continue the game loop after a delay
     setTimeout(gameLoop, gameSpeed);

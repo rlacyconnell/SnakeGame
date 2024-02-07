@@ -2,16 +2,11 @@
 
 
 
-// Function to draw a start message/button over canvas
-function startButtonMessage() {
-    context.fillStyle = "rgba(0, 0, 0, 0.5)"; // Semi-transparent black background
-    context.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
-    context.fillStyle = "#ffffff";
-    context.font = "30px Times New Roman";
-    context.textAlign = "center";
-    context.fillText("Start Game", canvas.width / 2, canvas.height / 2); // Draw the text in the center
+var canvas = document.getElementById("gameCanvas");
+var context = canvas.getContext('2d');
 
-}
+// Define isGameStarted variable globally
+var isGameStarted = false;
 
 let isPaused = false;
 
@@ -35,7 +30,7 @@ function togglePause() {
 
 // Function to draw a pause message
 function drawPauseMessage() {
-    context.fillStyle = "rgba(0, 0, 0, 0.5)"; // Semi-transparent black background
+    context.fillStyle = "rgba(0, 0, 0, 0.25)"; // Semi-transparent black background
     context.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
     context.fillStyle = "#ffffff"; // White text color
     context.font = "30px Times New Roman"; // Set font size and family
@@ -83,3 +78,34 @@ function resetGame() {
     gameOver = false; // Reset game over flag
 }
 
+// Function to draw a start message/button over canvas
+function drawStartMessage() {
+    context.fillStyle = "rgba(0, 0, 0, 0.25)"; // Semi-transparent black background
+    context.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
+    context.fillStyle = "#ffffff"; // White text color
+    context.font = "30px Times New Roman"; // Set font size and family
+    context.textAlign = "center"; // Center text horizontally
+    context.fillText("Click to Start Game", canvas.width / 2, canvas.height / 2); // Draw the text in the center
+}
+
+// Call the drawStartMessage function initially to display the start message/button
+drawStartMessage(context);
+
+
+// Add this event listener to the canvas
+canvas.addEventListener("click", startGameOnClick);
+
+// Modify the function to start the game loop
+function startGameOnClick(event) {
+    // Check if the game has already started
+    if (!isGameStarted) {
+        // Hide the start message/button
+        drawStartMessage();
+
+        // Set isGameStarted to true
+        isGameStarted = true;
+
+        // Start the game loop
+        gameLoop();
+    }
+}
