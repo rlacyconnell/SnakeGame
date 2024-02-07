@@ -2,6 +2,17 @@
 
 
 
+// Function to draw a start message/button over canvas
+function startButtonMessage() {
+    context.fillStyle = "rgba(0, 0, 0, 0.5)"; // Semi-transparent black background
+    context.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
+    context.fillStyle = "#ffffff";
+    context.font = "30px Times New Roman";
+    context.textAlign = "center";
+    context.fillText("Start Game", canvas.width / 2, canvas.height / 2); // Draw the text in the center
+
+}
+
 let isPaused = false;
 
 // Get reference to the pause button
@@ -27,7 +38,7 @@ function drawPauseMessage() {
     context.fillStyle = "rgba(0, 0, 0, 0.5)"; // Semi-transparent black background
     context.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
     context.fillStyle = "#ffffff"; // White text color
-    context.font = "30px Arial"; // Set font size and family
+    context.font = "30px Times New Roman"; // Set font size and family
     context.textAlign = "center"; // Center text horizontally
     context.fillText("Game Paused", canvas.width / 2, canvas.height / 2); // Draw the text in the center
 }
