@@ -89,7 +89,6 @@ function gameLoop() {
         return;
     }
 
-    // Rest of the game logic goes here
     context.clearRect(0, 0, canvas.width, canvas.height);
     moveSnake();
 
