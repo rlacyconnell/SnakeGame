@@ -1,2 +1,2 @@
-Snake Game
-The Hardest Game Every Made
+#Snake Game
+Snake eats apple, pretty complex right?
